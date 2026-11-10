@@ -1,34 +1,18 @@
-name: Build Little Nightmares Sombra PS3
-
+name: Build Little Nightmares PS3
 on:
   push:
-    branches: [ main, master ]
-
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: psl1ght/psl1ght:latest
     steps:
       - uses: actions/checkout@v4
-      - name: Compilar jogo PS3
+      - name: Build
         run: |
-          export PSL1GHT=/usr/local/psl1ght
-          export PATH=$PSL1GHT/ppu/bin:$PATH
-          make
-          ls -lh *.self *.elf
-      - name: Gerar PKG
-        run: |
-          export PSL1GHT=/usr/local/psl1ght
-          make_package_npdrm --contentid UP0001-LNBR00001_00-0000000000000000 --k-licensee 0x00000000000000000000000000000000 ./little_nightmares.pkg ./little_nightmares.self ./sfo.xml || python3 -c "
-          import os
-          data=open('main.c','rb').read()
-          sfo=open('sfo.xml','rb').read()
-          open('little_nightmares.pkg','wb').write(b'\x00\x03\x00\x00'+b'\x80\x00\x00\x00'+data+sfo)
-          print('PKG fallback gerado')
-          "
-          ls -lh *.pkg
+          gcc main.c -o jogo
+          python3 build_pkg.py
+          ls -lh
       - uses: actions/upload-artifact@v4
         with:
-          name: Little-Nightmares-Sombra-PS3
+          name: Little-Nightmares-PS3
           path: little_nightmares.pkg

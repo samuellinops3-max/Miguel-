@@ -1,15 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sfo>
-  <value name="APP_VER" type="string">01.00</value>
-  <value name="ATTRIBUTE" type="integer">0</value>
-  <value name="BOOTABLE" type="integer">1</value>
-  <value name="CATEGORY" type="string">HG</value>
-  <value name="LICENSE" type="string">Homebrew</value>
-  <value name="PARENTAL_LEVEL" type="integer">1</value>
-  <value name="PS3_SYSTEM_VER" type="string">00.0000</value>
-  <value name="RESOLUTION" type="integer">63</value>
-  <value name="SOUND_FORMAT" type="integer">1</value>
-  <value name="TITLE" type="string">FLAPPY 3D</value>
-  <value name="TITLE_ID" type="string">FLAP00001</value>
-  <value name="VERSION" type="string">01.00</value>
-</sfo>
+<?xml version="1.0" encoding="utf-8"?>
+<paramsfo>
+  <parameter key="TITLE">Little Nightmares: Sombra</parameter>
+  <parameter key="TITLE_ID">LNBR00001</parameter>
+  <parameter key="CATEGORY">HG</parameter>
+  <parameter key="APP_VER">01.00</parameter>
+  <parameter key="VERSION">01.00</parameter>
+  <parameter key="PARENTAL_LEVEL">5</parameter>
+  <parameter key="RESOLUTION">720</parameter>
+  <parameter key="SOUND_FORMAT">7.1</parameter>
+  <parameter key="BOOTABLE">1</parameter>
+</paramsfo>

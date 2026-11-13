@@ -1,23 +1,38 @@
 ifeq ($(strip $(PSL1GHT)),)
-$(error "PSL1GHT nao definido - vai instalar no build.yml")
+$(error "Defina a variavel PSL1GHT")
 endif
+include $(PSL1GHT)/ppu_rules
 
-include $(PSL1GHT)/ppu/rules.mk
+.DEFAULT_GOAL := all
 
-TITLE       := Little Nightmares - Sombra
-APPID       := LNBR00001
-CONTENTID   := UP0001-LNBR00001_00-0000000000000000
+TARGET    := cobra-br
+TITLE     := Cobra Arena BR
+APPID     := COBR00002
+CONTENTID := UP0001-$(APPID)_00-0000000000000000
+SFOXML    := sfo.xml
+PORTLIBS  := $(PS3DEV)/portlibs/ppu
 
-TARGET      := little_nightmares
-BUILD_PRX   := 1
+MACHDEP := -mhard-float -fmodulo-sched -ffunction-sections -fdata-sections
+CFLAGS  := -O2 -Wall -mcpu=cell $(MACHDEP) -I$(PSL1GHT)/ppu/include -I$(PORTLIBS)/include
+LDFLAGS := $(MACHDEP) -L$(PSL1GHT)/ppu/lib -L$(PORTLIBS)/lib
+LIBS    := -lrsx -lgcm_sys -lio -lsysutil -lrt -llv2 -lm
 
-CFILES      := main.c
-CXXFILES    :=
-INCLUDE     := -I$(PSL1GHT)/ppu/include -I$(PSL1GHT)/common/include
-LIBDIRS     := -L$(PSL1GHT)/ppu/lib -L$(PSL1GHT)/common/lib
-LIBS        := -lrsx -lgcm_sys -lio -lsysutil -lsysmodule -lm
+all: $(TARGET).pkg
 
-all: $(TARGET).elf $(TARGET).self
+main.o: main.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET).elf: main.o
+	$(CC) $(LDFLAGS) -o $@ $< $(LIBS)
+
+$(TARGET).pkg: $(TARGET).elf ICON0.PNG $(SFOXML)
+	rm -rf pkg
+	mkdir -p pkg/USRDIR
+	cp ICON0.PNG pkg/ICON0.PNG
+	$(PS3DEV)/bin/sprxlinker $(TARGET).elf
+	$(PS3DEV)/bin/make_self_npdrm $(TARGET).elf pkg/USRDIR/EBOOT.BIN $(CONTENTID)
+	$(PS3DEV)/bin/sfo.py --title "$(TITLE)" --appid "$(APPID)" -f $(SFOXML) pkg/PARAM.SFO
+	$(PS3DEV)/bin/pkg.py --contentid $(CONTENTID) pkg/ $@
 
 clean:
-	rm -rf $(TARGET).elf $(TARGET).self *.pkg *.o
+	rm -rf pkg *.o *.elf *.self *.pkg
